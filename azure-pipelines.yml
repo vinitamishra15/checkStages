@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+#pool: Default
+pool: WindowsPool
+
+stages:
+  - stage: PrintVersion
+    displayName: 'Print Version'
+    jobs:
+      - job: PrintVersionJob
+        displayName: 'Run printVersion.ps1'
+        steps:
+          - task: PowerShell@2
+            displayName: 'Run printVersion.ps1'
+            inputs:
+              targetType: 'filePath'
+              filePath: './printVersion.ps1'
+              pwsh: true
+              # capture the output of the script
+              failOnStderr: true
+            name: PrintVersionTask
+          - script: |
+              echo "##vso[task.setvariable variable=version]$(Write-Host)"
+            displayName: 'Capture version output'
+
+  - stage: InstallVersion
+    displayName: 'Install Version'
+    dependsOn: PrintVersion  # This stage will run after PrintVersion
+    jobs:
+      - job: InstallVersionJob
+        displayName: 'Run installVersion.ps1'
+        steps:
+          - task: PowerShell@2
+            displayName: 'Run installVersion.ps1'
+            inputs:
+              targetType: 'filePath'
+              filePath: './installVersion.ps1'
+              arguments: '-version $(version)'  # Pass the version as an argument
+              pwsh: true
