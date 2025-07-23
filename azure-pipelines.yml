@@ -17,7 +17,6 @@ stages:
             inputs:
               targetType: 'filePath'
               filePath: './printVersion.ps1'
-              pwsh: true
 
   - stage: InstallVersion
     displayName: 'Install Version'
