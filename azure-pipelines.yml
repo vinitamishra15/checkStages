@@ -25,6 +25,7 @@ stages:
               failOnStderr: true
             name: PrintVersionTask
           - script: |
+              echo "printing version..."
               echo "##vso[task.setvariable variable=version]$(Write-Host)"
             displayName: 'Capture version output'
 
