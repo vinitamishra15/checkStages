@@ -26,7 +26,8 @@ stages:
             name: PrintVersionTask
           - script: |
               echo "printing version..."
-              echo "##vso[task.setvariable variable=version]$(Write-Host)"
+              $version = $(Write-Host)
+              echo "##vso[task.setvariable variable=version]$version"
             displayName: 'Capture version output'
 
   - stage: InstallVersion
