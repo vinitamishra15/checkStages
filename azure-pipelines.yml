@@ -14,7 +14,7 @@ stages:
       name: Publish       # <--- Task name, required for output reference
       inputs:
         targetType: 'filePath'
-        filePath: '$(Build.SourcesDirectory)/publish.ps1'
+        filePath: '$(Build.SourcesDirectory)/printVersion.ps1'
 
 - stage: appRepoInstall
   dependsOn: appRepoPublish
@@ -26,5 +26,5 @@ stages:
     - task: PowerShell@2
       inputs:
         targetType: 'filePath'
-        filePath: '$(Build.SourcesDirectory)/install.ps1'
+        filePath: '$(Build.SourcesDirectory)/installVersion.ps1'
         arguments: '-version $(versionFromPublish)'
