@@ -5,34 +5,25 @@ trigger:
 pool: WindowsPool
 
 stages:
-  - stage: PrintVersion
-    displayName: 'Print Version'
-    jobs:
-      - job: PrintVersionJob
-        displayName: 'Run printVersion.ps1'
-        steps:
-          - task: PowerShell@2
-            name: PrintVersionTask
-            displayName: 'Run printVersion.ps1'
-            inputs:
-              targetType: 'filePath'
-              filePath: './printVersion.ps1'
+- stage: appRepoPublish
+  jobs:
+  - job: PublishApp
+    steps:
+    - task: PowerShell@2
+      name: Publish       # <--- Task name, required for output reference
+      inputs:
+        targetType: 'filePath'
+        filePath: '$(Build.SourcesDirectory)/publish.ps1'
 
-  - stage: InstallVersion
-    displayName: 'Install Version'
-    dependsOn: PrintVersion  # This stage will run after PrintVersion
-    jobs:
-      - job: InstallVersionJob
-        displayName: 'Run installVersion.ps1'
-        variables:
-          versionFromPrint: $[ dependencies.PrintVersion.outputs['getVersion.version'] ]
-        steps:
-          - script: |
-             echo "Version passed from previous: $(versionFromPrint)"
-            displayName: 'Debug Version Output'
-          - task: PowerShell@2
-            displayName: 'Run installVersion.ps1'
-            inputs:
-              targetType: 'filePath'
-              filePath: './installVersion.ps1'
-              arguments: '-version $(versionFromPrint)'  # Pass the version as an argument
+- stage: appRepoInstall
+  dependsOn: appRepoPublish
+  variables:
+    versionFromPublish: $[ dependencies.appRepoPublish.outputs['PublishApp.Publish.version'] ]
+  jobs:
+  - job: InstallApp
+    steps:
+    - task: PowerShell@2
+      inputs:
+        targetType: 'filePath'
+        filePath: '$(Build.SourcesDirectory)/install.ps1'
+        arguments: '-version $(versionFromPublish)'
