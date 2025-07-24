@@ -6,6 +6,10 @@ stages:
   jobs:
   - job: PublishApp
     steps:
+    - script: |
+       echo "Build.SourcesDirectory: $(Build.SourcesDirectory)"
+       dir $(Build.SourcesDirectory)
+      displayName: 'Debug file path'
     - task: PowerShell@2
       name: Publish       # <--- Task name, required for output reference
       inputs:
