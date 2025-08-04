@@ -63,7 +63,7 @@ foreach ($commit in $gitCommits) {
         if ($message -match $item) {
             # Fetch detailed commit (for files)
             $commitDetails = Invoke-RestMethod -Uri $commit.url -Headers $gitHubHeaders
-            $files = $commitDetails.files | ForEach-Object { $_.filename } -join ", "
+            $files = ( $commitDetails.files | ForEach-Object { $_.filename } ) -join ", "
             $commitInfo = @{
                 WorkItem = $item
                 Message = $message
