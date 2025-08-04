@@ -16,6 +16,17 @@ stages:
         targetType: 'filePath'
         filePath: '$(Build.SourcesDirectory)/printVersion.ps1'
 
+- stage: createCR
+  jobs:
+    - job: CreateCRJob
+      steps:
+        - task: PowerShell@2
+          inputs:
+            targetType: filePath
+            filePath: '$(Build.SourcesDirectory)/CreateCR.ps1'
+            arguments: |
+              -SNowInstance "dev228661" -destUName "admin" -destPwd "Tech@1161" -sourceDir "$(Build.SourcesDirectory)"
+
 - stage: appRepoInstall
   dependsOn: appRepoPublish
   variables:
@@ -26,8 +37,8 @@ stages:
     - script: |
         echo "Installing version: $(versionFromPublish)"
       displayName: 'Print version from publish stage'
-    - task: PowerShell@2
-      inputs:
-        targetType: 'filePath'
-        filePath: '$(Build.SourcesDirectory)/installVersion.ps1'
-        arguments: '-version $(versionFromPublish)'
+#    - task: PowerShell@2
+#      inputs:
+#        targetType: 'filePath'
+#        filePath: '$(Build.SourcesDirectory)/installVersion.ps1'
+#        arguments: '-version $(versionFromPublish)'
