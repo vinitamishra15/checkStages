@@ -32,9 +32,6 @@ $repoUrl = $env:BUILD_REPOSITORY_URI
 $repoName = $env:BUILD_REPOSITORY_NAME
 $repoOwner = ($repoUrl -split '/')[3]
 
-Write-Host "gitHubToken: $gitHubToken"
-Write-Host "repoUrl: $repoUrl and repoName: $repoName and repoOwner: $repoOwner"
-
 if (-not $gitHubToken) {
     Write-Error "GitHub token is not available in GITHUB_TOKEN environment variable."
     exit 1
@@ -53,7 +50,6 @@ $gitCommits = Invoke-RestMethod -Uri $commitApiUrl -Headers $gitHubHeaders
 
 $matchedCommits = @()
 foreach ($commit in $gitCommits) {
-    Write-Host "Inside for loop....."
     $message = $commit.commit.message
     foreach ($item in $workItems) {
         if ($message -match $item) {
@@ -64,7 +60,6 @@ foreach ($commit in $gitCommits) {
               Where-Object { $_.filename -notlike '*checksum.txt' } |
               ForEach-Object { $_.filename }
             ) -join ", "
-            Write-Host "files: $files"
             $commitInfo = @{
                 WorkItem = $item
                 Message = $message
@@ -72,7 +67,6 @@ foreach ($commit in $gitCommits) {
                 CommitURL = $commit.html_url
             }
             $matchedCommits += $commitInfo
-            Write-Host "Matched commits: $matchedCommits"
             break
         }
     }
@@ -84,9 +78,7 @@ if ($matchedCommits.Count -gt 0) {
     $commitSummary += "`n`n--- Commit Details ---"
     foreach ($commit in $matchedCommits) {
         $commitSummary += "`nWorkItem: $($commit.WorkItem)"
-        $commitSummary += "`nMessage: $($commit.Message)"
-        $commitSummary += "`nFiles: $($commit.Files)"
-        $commitSummary += "`nURL: $($commit.CommitURL)`n"
+        $commitSummary += "`nFiles: $($commit.Files)`n"
     }
     Write-Host "Commit Summary: $commitSummary"
 } else {
