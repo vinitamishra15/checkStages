@@ -59,7 +59,7 @@ foreach ($commit in $gitCommits) {
               $commitDetails.files |
               Where-Object { $_.filename -notlike '*checksum.txt' } |
               ForEach-Object { $_.filename }
-            ) -join ", "
+            ) -join "`n"
             $commitInfo = @{
                 WorkItem = $item
                 Message = $message
