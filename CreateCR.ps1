@@ -95,6 +95,7 @@ if ($matchedCommits.Count -gt 0) {
     $commitSummary += "`n`n--- No matching commits found in main branch ---"
 }
 
+Write-Host "Commit summary before append: $commitSummary"
 # Append commit summary to description
 $fullDescription = $description + $commitSummary
 Write-Host "fullDescription: $fullDescription"
