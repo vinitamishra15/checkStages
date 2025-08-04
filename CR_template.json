@@ -1,0 +1,13 @@
+{
+  "short_description": "Testing CR update",
+  "description": "STRY00001,DFCT00001",
+  "category": "Other",
+  "type": "Normal",
+  "priority": "4",
+  "risk": "3",
+  "impact": "3",
+  "assignment_group": "CAB Approval",
+  "justification": "Testing to update file name in CR",
+  "implementation_plan": "NA",
+  "backout_plan": "Test"
+}
