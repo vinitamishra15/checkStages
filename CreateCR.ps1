@@ -47,7 +47,7 @@ $gitHubHeaders = @{
     "User-Agent"  = "AzurePipelineScript"
 }
 
-$commitApiUrl = "https://api.github.com/repos/$repoOwner/$repoName/commits?sha=main&per_page=100"
+$commitApiUrl = "https://api.github.com/repos/$repoName/commits?sha=main&per_page=100"
 Write-Host "commitApiUrl: $commitApiUrl"
 $gitCommits = Invoke-RestMethod -Uri $commitApiUrl -Headers $gitHubHeaders
 
