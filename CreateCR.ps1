@@ -54,8 +54,9 @@ $gitCommits = Invoke-RestMethod -Uri $commitApiUrl -Headers $gitHubHeaders
 Write-Host "gitCommits: $gitCommits"
 
 $matchedCommits = @()
-
+Write-Host "Initialized empty record..."
 foreach ($commit in $gitCommits) {
+    Write-Host "Inside for loop....."
     $message = $commit.commit.message
     Write-Host "commit: $commit ------ message: $message"
     foreach ($item in $workItems) {
