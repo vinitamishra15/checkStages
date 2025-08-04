@@ -47,7 +47,7 @@ $gitHubHeaders = @{
     "User-Agent"  = "AzurePipelineScript"
 }
 
-$commitApiUrl = "https://api.github.com/repos/vinitamishra15/Demo_repo/commits?sha=main&per_page=10"
+$commitApiUrl = "https://api.github.com/repos/vinitamishra15/Demo_repo/commits?sha=Release_Aug25&per_page=10"
 Write-Host "commitApiUrl: $commitApiUrl"
 $gitCommits = Invoke-RestMethod -Uri $commitApiUrl -Headers $gitHubHeaders
 
