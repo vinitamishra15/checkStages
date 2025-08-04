@@ -60,10 +60,13 @@ foreach ($commit in $gitCommits) {
     $message = $commit.commit.message
     Write-Host "commit: $commit ------ message: $message"
     foreach ($item in $workItems) {
+        Write-Host "item: $item and workItems: $workItems"
         if ($message -match $item) {
             # Fetch detailed commit (for files)
             $commitDetails = Invoke-RestMethod -Uri $commit.url -Headers $gitHubHeaders
+            Write-Host "Commit details: $commitDetails"
             $files = ( $commitDetails.files | ForEach-Object { $_.filename } ) -join ", "
+            Write-Host "files: $files"
             $commitInfo = @{
                 WorkItem = $item
                 Message = $message
