@@ -90,12 +90,14 @@ if ($matchedCommits.Count -gt 0) {
         $commitSummary += "`nFiles: $($commit.Files)"
         $commitSummary += "`nURL: $($commit.CommitURL)`n"
     }
+    Write-Host "Commit Summary: $commitSummary"
 } else {
     $commitSummary += "`n`n--- No matching commits found in main branch ---"
 }
 
 # Append commit summary to description
 $fullDescription = $description + $commitSummary
+Write-Host "fullDescription: $fullDescription"
 
 #Create CR using REST API
 $url = "https://$SNowInstance.service-now.com/api/now/table/change_request"
