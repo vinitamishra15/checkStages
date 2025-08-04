@@ -32,6 +32,9 @@ $repoUrl = $env:BUILD_REPOSITORY_URI
 $repoName = $env:BUILD_REPOSITORY_NAME
 $repoOwner = ($repoUrl -split '/')[3]
 
+Write-Host "gitHubToken: $gitHubToken"
+Write-Host "repoUrl: $repoUrl and repoName: $repoName and repoOwner: $repoOwner"
+
 if (-not $gitHubToken) {
     Write-Error "GitHub token is not available in GITHUB_TOKEN environment variable."
     exit 1
