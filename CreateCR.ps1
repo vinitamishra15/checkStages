@@ -51,21 +51,19 @@ $commitApiUrl = "https://api.github.com/repos/vinitamishra15/Demo_repo/commits?s
 Write-Host "commitApiUrl: $commitApiUrl"
 $gitCommits = Invoke-RestMethod -Uri $commitApiUrl -Headers $gitHubHeaders
 
-Write-Host "gitCommits: $gitCommits"
-
 $matchedCommits = @()
-Write-Host "Initialized empty record..."
 foreach ($commit in $gitCommits) {
     Write-Host "Inside for loop....."
     $message = $commit.commit.message
-    Write-Host "commit: $commit ------ message: $message"
     foreach ($item in $workItems) {
-        Write-Host "item: $item and workItems: $workItems"
         if ($message -match $item) {
             # Fetch detailed commit (for files)
             $commitDetails = Invoke-RestMethod -Uri $commit.url -Headers $gitHubHeaders
-            Write-Host "Commit details: $commitDetails"
-            $files = ( $commitDetails.files | ForEach-Object { $_.filename } ) -join ", "
+            $files = (
+              $commitDetails.files |
+              Where-Object { $_.filename -notlike '*checksum.txt' } |
+              ForEach-Object { $_.filename }
+            ) -join ", "
             Write-Host "files: $files"
             $commitInfo = @{
                 WorkItem = $item
@@ -106,7 +104,7 @@ $auth = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(
 $headers = @{ Authorization = "Basic $auth"; 'Content-Type' = 'application/json' }
 $body = @{
   "short_description"   = $shortDesc
-  "description"         = $description
+  "description"         = $fullDescription
   "category"            = $category
   "type"                = $type
   "priority"            = $priority
