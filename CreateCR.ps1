@@ -23,6 +23,68 @@ $justification=$CR_data.justification
 $implementation_plan=$CR_data.implementation_plan
 $backout_plan=$CR_data.backout_plan
 
+# Parseing story/defect IDs
+$workItems = $description -split ',' | ForEach-Object { $_.Trim() }
+
+# GitHub repository details
+$gitHubToken = $env:GITHUB_TOKEN
+$repoUrl = $env:BUILD_REPOSITORY_URI
+$repoName = $env:BUILD_REPOSITORY_NAME
+$repoOwner = ($repoUrl -split '/')[3]
+
+if (-not $gitHubToken) {
+    Write-Error "GitHub token is not available in GITHUB_TOKEN environment variable."
+    exit 1
+}
+
+# GitHub API
+$gitHubHeaders = @{
+    Authorization = "Bearer $gitHubToken"
+    Accept        = "application/vnd.github.v3+json"
+    "User-Agent"  = "AzurePipelineScript"
+}
+
+$commitApiUrl = "https://api.github.com/repos/$repoOwner/$repoName/commits?sha=main&per_page=100"
+$gitCommits = Invoke-RestMethod -Uri $commitApiUrl -Headers $gitHubHeaders
+
+$matchedCommits = @()
+
+foreach ($commit in $gitCommits) {
+    $message = $commit.commit.message
+    foreach ($item in $workItems) {
+        if ($message -match $item) {
+            # Fetch detailed commit (for files)
+            $commitDetails = Invoke-RestMethod -Uri $commit.url -Headers $gitHubHeaders
+            $files = $commitDetails.files | ForEach-Object { $_.filename } -join ", "
+            $commitInfo = @{
+                WorkItem = $item
+                Message = $message
+                Files = $files
+                CommitURL = $commit.html_url
+            }
+            $matchedCommits += $commitInfo
+            break
+        }
+    }
+}
+
+# Format commit summary
+$commitSummary = ""
+if ($matchedCommits.Count -gt 0) {
+    $commitSummary += "`n`n--- Commit Details ---"
+    foreach ($commit in $matchedCommits) {
+        $commitSummary += "`nWorkItem: $($commit.WorkItem)"
+        $commitSummary += "`nMessage: $($commit.Message)"
+        $commitSummary += "`nFiles: $($commit.Files)"
+        $commitSummary += "`nURL: $($commit.CommitURL)`n"
+    }
+} else {
+    $commitSummary += "`n`n--- No matching commits found in main branch ---"
+}
+
+# Append commit summary to description
+$fullDescription = $description + $commitSummary
+
 #Create CR using REST API
 $url = "https://$SNowInstance.service-now.com/api/now/table/change_request"
 $auth = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes("${destUName}:${destPwd}"))
