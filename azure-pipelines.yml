@@ -25,7 +25,7 @@ stages:
             targetType: filePath
             filePath: '$(Build.SourcesDirectory)/CreateCR.ps1'
             arguments: |
-              -SNowInstance "dev228661" -destUName "admin" -destPwd "Tech@1161" -sourceDir "$(Build.SourcesDirectory)"
+              -SNowInstance "dev228661" -destUName "admin" -destPwd "3Bnlvk*2WI^O" -sourceDir "$(Build.SourcesDirectory)"
 
 - stage: appRepoInstall
   dependsOn: appRepoPublish
