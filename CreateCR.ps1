@@ -47,14 +47,17 @@ $gitHubHeaders = @{
     "User-Agent"  = "AzurePipelineScript"
 }
 
-$commitApiUrl = "https://api.github.com/repos/$repoName/commits?sha=main&per_page=100"
+$commitApiUrl = "https://api.github.com/repos/$repoName/commits?sha=main&per_page=10"
 Write-Host "commitApiUrl: $commitApiUrl"
 $gitCommits = Invoke-RestMethod -Uri $commitApiUrl -Headers $gitHubHeaders
+
+Write-Host "gitCommits: $gitCommits"
 
 $matchedCommits = @()
 
 foreach ($commit in $gitCommits) {
     $message = $commit.commit.message
+    Write-Host "commit: $commit ------ message: $message"
     foreach ($item in $workItems) {
         if ($message -match $item) {
             # Fetch detailed commit (for files)
