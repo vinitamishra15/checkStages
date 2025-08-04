@@ -74,6 +74,7 @@ foreach ($commit in $gitCommits) {
                 CommitURL = $commit.html_url
             }
             $matchedCommits += $commitInfo
+            Write-Host "Matched commits: $matchedCommits"
             break
         }
     }
