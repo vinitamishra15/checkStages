@@ -1,6 +1,9 @@
 #pool: Default
 pool: WindowsPool
 
+variables:
+  - group: SecretGroup
+
 stages:
 - stage: appRepoPublish
   jobs:
@@ -26,6 +29,8 @@ stages:
             filePath: '$(Build.SourcesDirectory)/CreateCR.ps1'
             arguments: |
               -SNowInstance "dev228661" -destUName "admin" -destPwd "3Bnlvk*2WI^O" -sourceDir "$(Build.SourcesDirectory)"
+          env:
+            GITHUB_TOKEN: $(GitHubToken)
 
 - stage: appRepoInstall
   dependsOn: appRepoPublish
