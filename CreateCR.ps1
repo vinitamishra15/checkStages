@@ -57,7 +57,7 @@ foreach ($commit in $gitCommits) {
             $commitDetails = Invoke-RestMethod -Uri $commit.url -Headers $gitHubHeaders
             $files = (
               $commitDetails.files |
-              Where-Object { $_.filename -notlike '*checksum.txt' } |
+              Where-Object { $_.filename -like '*.xml' } |
               ForEach-Object { $_.filename }
             ) -join "`n"
             $commitInfo = @{
@@ -78,7 +78,7 @@ if ($matchedCommits.Count -gt 0) {
     $commitSummary += "`n`n--- Commit Details ---"
     foreach ($commit in $matchedCommits) {
         $commitSummary += "`nWorkItem: $($commit.WorkItem)"
-        $commitSummary += "`nFiles: $($commit.Files)`n"
+        $commitSummary += "`n $($commit.Files)`n"
     }
     Write-Host "Commit Summary: $commitSummary"
 } else {
