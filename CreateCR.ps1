@@ -75,7 +75,7 @@ foreach ($commit in $gitCommits) {
 # Format commit summary
 $commitSummary = ""
 if ($matchedCommits.Count -gt 0) {
-    $commitSummary += "`n`n--- Commit Details ---"
+    $commitSummary += "`n`n--- File level details ---"
     foreach ($commit in $matchedCommits) {
         $commitSummary += "`nWorkItem: $($commit.WorkItem)"
         $commitSummary += "`n $($commit.Files)`n"
