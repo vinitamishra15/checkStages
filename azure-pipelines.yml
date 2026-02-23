@@ -21,16 +21,20 @@ stages:
 
 - stage: createCR
   jobs:
-    - job: CreateCRJob
-      steps:
-        - task: PowerShell@2
-          inputs:
-            targetType: filePath
-            filePath: '$(Build.SourcesDirectory)/CreateCR.ps1'
-            arguments: |
-              -SNowInstance "dev228661" -destUName "admin" -destPwd "3Bnlvk*2WI^O" -sourceDir "$(Build.SourcesDirectory)"
-          env:
-            GITHUB_TOKEN: $(GitHubToken)
+    - deployment: CreateCRJob
+      environment: staging-test-approval
+      strategy:
+       runOnce:
+         deploy:
+           steps:
+            - task: PowerShell@2
+              inputs:
+                targetType: filePath
+                filePath: '$(Build.SourcesDirectory)/CreateCR.ps1'
+                arguments: |
+                  -SNowInstance "dev228661" -destUName "admin" -destPwd "3Bnlvk*2WI^O" -sourceDir "$(Build.SourcesDirectory)"
+              env:
+                GITHUB_TOKEN: $(GitHubToken)
 
 - stage: appRepoInstall
   dependsOn: appRepoPublish
