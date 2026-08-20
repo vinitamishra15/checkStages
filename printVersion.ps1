@@ -1,4 +1,4 @@
-# printVersion.ps1
+# printVersion.ps1 rel2 merge test
 $newVersion = "1.0.0"
 Write-Host "Generated version: $version"
 
